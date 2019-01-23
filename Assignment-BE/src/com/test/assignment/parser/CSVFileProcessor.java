@@ -11,20 +11,25 @@ import java.util.Set;
 
 import com.test.assignment.util.ReportGenerator;
 
-
-public class CSVFileParser implements FileParser {
+/**
+ * CSV File Parser to parse csv content
+ *
+ */
+public class CSVFileProcessor implements FileProcessor {
 
 	private static final String COMMA = ",";
 	private static final String FILE_HEADER = "Reference, Description";
 	private static DecimalFormat doubleformat = new DecimalFormat("#0.00");
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void parse(File file) {
+	public void process(File file) {
 		try {
-			Set<String> refSet = new HashSet<>();
-			List<String> errorRecords=new LinkedList<>();
-			Scanner scanner;
-			scanner = new Scanner(file);
+			Set<String> recordSet = new HashSet<>();
+			List<String> errorRecords = new LinkedList<>();
+			Scanner scanner = new Scanner(file);
 			boolean skipHeader = false;
 			while (scanner.hasNextLine()) {
 				if (!skipHeader) {
@@ -34,36 +39,30 @@ public class CSVFileParser implements FileParser {
 				}
 				String nextLine = scanner.nextLine();
 				nextLine.trim();
-				boolean isDuplicate=false;
+				boolean isDuplicate = false;
 				if (!nextLine.equals("")) {
 					String[] split = nextLine.split(COMMA);
-					String recref = split[0];
-					if(!refSet.contains(recref)) {
-						refSet.add(recref);
-						
-					}
-					else {
-						isDuplicate=true;
-					}
-					// String acctNo = split[1];
+					String transactionRefId = split[0];
 					String desc = split[2];
+					if (!recordSet.contains(transactionRefId)) {
+						recordSet.add(transactionRefId);
+
+					} else {
+						isDuplicate = true;
+					}
 					double startBal = Double.parseDouble(split[3]);
 					double mutationVal = Double.parseDouble(split[4]);
 					double expectedEndBal = Double.parseDouble(doubleformat.format(startBal + mutationVal));
 					double actualEndBal = Double.parseDouble(split[5]);
 					if (isDuplicate || actualEndBal != expectedEndBal) {
-						errorRecords.add(recref+COMMA+desc);
-						
+						errorRecords.add(transactionRefId + COMMA + desc);
 					}
 				}
-
 			}
-
 			scanner.close();
 			ReportGenerator.generateReport(FILE_HEADER, errorRecords);
 		} catch (IOException e) {
 			System.out.println("Error while flushing/closing fileWriter !!!");
-		} 
-
+		}
 	}
 }

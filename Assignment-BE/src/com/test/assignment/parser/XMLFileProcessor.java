@@ -1,17 +1,26 @@
 package com.test.assignment.parser;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
 import java.io.File;
 
-public class XMLFileParser implements FileParser {
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+/**
+ * CSV File Parser to parse csv content
+ *
+ */
+public class XMLFileProcessor implements FileProcessor {
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void parse(File file) {
+	public void process(File file) {
 		try {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
